@@ -9,8 +9,13 @@ const onHttpStart = () => console.log(`HTTP server is listening on port ${HTTP_P
 app.use(express.static('public'))
 
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '/views/index.html'))
+    res.redirect('/home')
 })
 
+app.get('/home', (req, res) => {
+    // res.send('hello home')
+    res.sendFile(path.join(__dirname, '/views/index.html'))
+
+})
 
 app.listen(HTTP_PORT, onHttpStart)
