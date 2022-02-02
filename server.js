@@ -17,15 +17,15 @@ app.get('/home', (req, res) => {
     res.sendFile(path.join(__dirname, '/views/index.html'))
 })
 
-app.get('/lyrics', (req, res) => {
-    // res.send('hello lyrics')
-    musicData.getAlbums().then((data) => {
-        res.json(data)
-    }).catch((error) => {
-        console.log(error)
-        res.status(404).send("ERROR!")
-    })
-})
+// app.get('/lyrics', (req, res) => {
+//     // res.send('hello lyrics')
+//     musicData.getAlbums().then((data) => {
+//         res.json(data)
+//     }).catch((error) => {
+//         console.log(error)
+//         res.status(404).send("ERROR!")
+//     })
+// })
 
 app.get('/lyrics/:id', (req, res) => {
     // res.send('hello lyrics')
@@ -46,8 +46,17 @@ app.get('/about', (req, res) => {
     res.send('hello about')
 })
 
-app.get('/music', (req, res) => {
-    res.send('hello music')
+app.get('/info/:id', (req, res) => {
+    musicData.getAlbums().then((data) => {
+        // res.json(data)
+        // res.send(req.params.id)
+        // resolvedPromiseData[idFromRequestParams].field
+        res.json(data[req.params.id-1])
+
+    }).catch((error) => {
+        console.log(error)
+        res.status(404).send("ERROR!")
+    })    
 })
 
 app.use((req, res) => {
