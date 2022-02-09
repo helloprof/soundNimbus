@@ -1,13 +1,33 @@
 const express = require('express')
 const app = express()
 
+const env = require('dotenv')
+env.config()
+
 const path = require('path')
 const musicData = require('./musicData')
 
-const HTTP_PORT = process.env.port || 8080
+const multer = require('multer')
+const cloudinary = require('cloudinary').v2
+const streamifier = require('streamifier')
+
+cloudinary.config({
+    cloud_name: process.env.CLOUD_NAME,
+    api_key: process.env.CLOUD_API_KEY,
+    api_secret: process.env.CLOUD_API_SECRET,
+    secure: true
+});
+
+const HTTP_PORT = process.env.PORT
 const onHttpStart = () => console.log(`HTTP server is listening on port ${HTTP_PORT} 🚀🚀🚀`)
 
 app.use(express.static('public'))
+
+// for form data without file
+// app.use(express.urlencoded({ extended: true }))
+
+// multer middleware
+const upload = multer()
 
 app.get('/', (req, res) => {
     res.redirect('/home')
@@ -41,6 +61,11 @@ app.get('/lyrics/:id', (req, res) => {
     })
 })
 
+app.get('/music', (req, res) => {
+    musicData.getAlbums().then((data) => {
+        res.json(data)
+    })
+})
 
 app.get('/about', (req, res) => {
     res.send('hello about')
@@ -59,8 +84,58 @@ app.get('/info/:id', (req, res) => {
     })    
 })
 
+
+app.get('/albums', (req, res) => {
+    res.sendFile(path.join(__dirname, '/views/albums.html'))
+})
+
+app.post('/albums/new', upload.single('photo'), (req, res) => {
+    let streamUpload = (req) => {
+        return new Promise((resolve, reject) => {
+            let stream = cloudinary.uploader.upload_stream(
+                (error, result) => {
+                if (result) {
+                    resolve(result);
+                } else {
+                    reject(error);
+                }
+                }
+            );
+            streamifier.createReadStream(req.file.buffer).pipe(stream);
+        });
+    };
+    
+    async function upload(req) {
+        let result = await streamUpload(req);
+        console.log(result);
+        return result;
+    }
+    
+    upload(req).then((uploaded)=>{
+
+
+        req.body.photo = uploaded.url;
+        console.log(req.body)
+
+        musicData.addAlbum(req.body).then((data) => {
+            res.redirect('/music')
+        }).catch((error) => {
+            res.status(500).send(error)
+        })
+
+        // res.send(JSON.stringify(req.body))
+    
+    });
+    
+
+})
+
 app.use((req, res) => {
     res.status(404).send("PAGE NOT FOUND!!")
 })
 
-app.listen(HTTP_PORT, onHttpStart)
+musicData.initialize().then(() => {
+    app.listen(HTTP_PORT, onHttpStart)
+}).catch((error) => {
+    console.log(error)
+})
