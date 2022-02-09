@@ -16,3 +16,11 @@ module.exports.getAlbums = function() {
         })
     } )
 }
+
+module.exports.addAlbum = function(album) {
+    return new Promise((resolve, reject) => {
+        album.id = albums.length + 1
+        albums.push(album)
+
+    })
+}
