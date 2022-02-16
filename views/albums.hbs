@@ -1,0 +1,56 @@
+
+    <div class="container" style="padding-top:60px">
+
+    <form method="post" action="/albums/new" enctype="multipart/form-data">
+      <fieldset>
+          <legend>Album Cover</legend>
+          <div class="row">
+              <div class="col-md-12">
+                  <div class="form-group">
+                      <input class="form-control" id="photo" name="photo" type="file" />
+                  </div>
+              </div>
+          </div>
+      </fieldset>
+      <br />
+      <fieldset>
+        <legend>Album Content</legend>
+          <div class="row">
+              <div class="col-md-12">
+                  <div class="form-group">
+                      <label for="title">Title:</label>
+                      <input class="form-control" id="title" name="title" type="text" />
+                  </div>
+              </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label for="artist">Artist:</label>
+                    <input class="form-control" id="artist" name="artist" type="text" />
+                </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label for="year">Year:</label>
+                    <input class="form-control" id="year" name="year" type="text" />
+                </div>
+            </div>
+          </div>
+          <div class="row">
+              <div class="col-md-12">
+                  <div class="form-group">
+                      <label for="body">Lyrics:</label>
+                     <textarea class="form-control" id="lyrics" name="lyrics" rows=15></textarea>
+                  </div>
+              </div>
+          </div>
+          </div>
+
+      </fieldset>
+      <hr />
+      <input type="submit" class="btn btn-primary pull-right" value="Add Album" />
+  </form>
+  </div>
