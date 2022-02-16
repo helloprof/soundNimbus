@@ -11,6 +11,8 @@ const multer = require('multer')
 const cloudinary = require('cloudinary').v2
 const streamifier = require('streamifier')
 
+const exphbs = require('express-handlebars');
+
 cloudinary.config({
     cloud_name: process.env.CLOUD_NAME,
     api_key: process.env.CLOUD_API_KEY,
@@ -29,12 +31,27 @@ app.use(express.static('public'))
 // multer middleware
 const upload = multer()
 
+// handle bars 
+app.engine('.hbs', exphbs.engine({ 
+    extname: '.hbs',
+    defaultLayout: 'main'
+}));
+app.set('view engine', '.hbs');
+
 app.get('/', (req, res) => {
     res.redirect('/home')
 })
 
 app.get('/home', (req, res) => {
-    res.sendFile(path.join(__dirname, '/views/index.html'))
+    // res.sendFile(path.join(__dirname, '/views/index.html'))
+
+    musicData.getAlbums().then((data) => {
+        res.render('index', {
+            data: data, 
+            layout: "main"
+        })
+    })
+
 })
 
 // app.get('/lyrics', (req, res) => {
@@ -86,7 +103,11 @@ app.get('/info/:id', (req, res) => {
 
 
 app.get('/albums', (req, res) => {
-    res.sendFile(path.join(__dirname, '/views/albums.html'))
+    // res.sendFile(path.join(__dirname, '/views/albums.html'))
+    res.render('albums', {
+        data: null,
+        layout: "main"
+    })
 })
 
 app.post('/albums/new', upload.single('photo'), (req, res) => {
@@ -114,11 +135,11 @@ app.post('/albums/new', upload.single('photo'), (req, res) => {
     upload(req).then((uploaded)=>{
 
 
-        req.body.photo = uploaded.url;
+        req.body.imagePath = uploaded.url;
         console.log(req.body)
 
         musicData.addAlbum(req.body).then((data) => {
-            res.redirect('/music')
+            res.redirect('/home')
         }).catch((error) => {
             res.status(500).send(error)
         })
