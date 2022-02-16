@@ -1,0 +1,29 @@
+    <div class="container">
+      <div class="row">
+        {{#each data}}
+          <div class="col-sm-6">
+            <div class="card" >
+              <img class="card-img-top" src={{imagePath}}>
+              <div class="card-body">
+                <h5 class="card-title">{{title}}</h5>
+                <h6 class="card-title">{{artist}}</h6>
+                <p class="card-text">{{year}}</p>
+                {{#if musicPath}}
+                  <a href={{musicPath}} class="btn btn-primary">Play</a>
+                {{/if}}
+                <a href="/lyrics/{{id}}" class="btn btn-success">Lyrics</a>
+                <a href="/info/{{id}}" class="btn btn-dark">More Info</a>
+              </div>
+            </div>        
+          </div>
+        {{else}}
+          <div class="col-sm-6">
+            <div class="card" >
+              <div class="card-body">
+                <h5 class="card-title">No Data Available</h5>
+              </div>
+            </div>        
+          </div>
+        {{/each}}
+      </div>
+    </div>
