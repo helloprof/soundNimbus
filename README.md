@@ -7,6 +7,9 @@ SoundCloud clone app using NodeJs, ExpressJS, HandlebarsJS
 - [Nodemon](https://nodemon.io/)
 - [Cloudinary Account](https://cloudinary.com/)
 
+## Resources
+- [Album Art Finder](https://bendodson.com/projects/itunes-artwork-finder/) - download with standard resolution to keep the 600x600 square sizing
+
 ## Local development
 Clone this repo.
 
