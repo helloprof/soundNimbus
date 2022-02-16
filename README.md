@@ -1,5 +1,5 @@
 # SoundNimbus
-## SoundCloud clone app using NodeJs, ExpressJS, HandlebarsJS
+SoundCloud clone app using NodeJs, ExpressJS, HandlebarsJS
 
 ## Requirements
 - Git (to clone this repo)
