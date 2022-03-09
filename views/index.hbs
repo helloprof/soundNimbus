@@ -8,11 +8,14 @@
                 <h5 class="card-title">{{title}}</h5>
                 <h6 class="card-title">{{artist}}</h6>
                 <p class="card-text">{{year}}</p>
-                {{#if musicPath}}
+                {{!-- {{#if musicPath}}
                   <a href={{musicPath}} class="btn btn-primary">Play</a>
                 {{/if}}
-                <a href="/lyrics/{{id}}" class="btn btn-success">Lyrics</a>
-                <a href="/info/{{id}}" class="btn btn-dark">More Info</a>
+                {{#if lyrics}}
+                  <a href="/lyrics/{{albumID}}" class="btn btn-success">Lyrics</a>
+                {{/if}} --}}
+                <a href="/info/{{albumID}}" class="btn btn-dark">More Info</a>
+                <a href="/albums/delete/{{albumID}}" class="btn btn-danger">Delete</a>
               </div>
             </div>        
           </div>
