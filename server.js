@@ -110,6 +110,16 @@ app.get('/albums', (req, res) => {
     })
 })
 
+app.get('/albums/delete/:id', (req, res) => {
+    musicData.deleteAlbum(req.params.id).then((data) => {
+        res.redirect("/home")
+
+    }).catch((error) => {
+        console.log(error)
+        res.status(500).send("ERROR!")
+    })    
+})
+
 app.post('/albums/new', upload.single('photo'), (req, res) => {
     let streamUpload = (req) => {
         return new Promise((resolve, reject) => {
