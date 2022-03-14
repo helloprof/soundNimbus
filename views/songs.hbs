@@ -1,0 +1,66 @@
+
+    <div class="container" style="padding-top:60px">
+
+    <form method="post" action="/songs/new" enctype="multipart/form-data">
+      <fieldset>
+          <legend>Song Upload (MP3)</legend>
+          <div class="row">
+              <div class="col-md-12">
+                  <div class="form-group">
+                      <input class="form-control" id="song" name="song" type="file" />
+                  </div>
+              </div>
+          </div>
+      </fieldset>
+      <br />
+      <fieldset>
+        <legend>Song Content</legend>
+          <div class="row">
+              <div class="col-md-12">
+                  <div class="form-group">
+                      <label for="title">Title:</label>
+                      <input class="form-control" id="title" name="title" type="text" />
+                  </div>
+              </div>
+          </div>
+          {{!-- <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label for="artist">Lyrics:</label>
+                    <input class="form-control" id="lyrics" name="lyrics" type="textarea" />
+                </div>
+            </div>
+          </div> --}}
+
+          <div class="row">
+              <div class="col-md-12">
+                  <div class="form-group">
+                      <label for="body">Lyrics:</label>
+                     <textarea class="form-control" id="lyrics" name="lyrics" rows=10></textarea>
+                  </div>
+              </div>
+          </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label for="albumID">Album:</label>
+                    {{#if data}}
+                    <select class="form-control" id="albumID" name="albumID" >
+                    <option value="">Select an Album</option>
+                    {{#each data}}
+                    <option value="{{albumID}}">{{title}}</option>
+                    {{/each}}
+                    </select>
+                    {{else}}
+                    <div>No Albums</div>
+                    {{/if}}
+                </div>
+            </div>
+          </div>
+          </div>
+
+      </fieldset>
+      <hr />
+      <input type="submit" class="btn btn-primary pull-right" value="Add Song" />
+  </form>
+  </div>
