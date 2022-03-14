@@ -102,12 +102,23 @@ app.get('/info/:id', (req, res) => {
 })
 
 
-app.get('/albums', (req, res) => {
+app.get('/albums/new', (req, res) => {
     // res.sendFile(path.join(__dirname, '/views/albums.html'))
     res.render('albums', {
         data: null,
         layout: "main"
     })
+})
+
+app.get('/songs/new', (req, res) => {
+    // res.sendFile(path.join(__dirname, '/views/albums.html'))
+    musicData.getAlbums().then((data) => {
+        res.render('songs', {
+            data: data,
+            layout: "main"
+        })
+    })
+
 })
 
 app.get('/albums/delete/:id', (req, res) => {
@@ -149,6 +160,48 @@ app.post('/albums/new', upload.single('photo'), (req, res) => {
         console.log(req.body)
 
         musicData.addAlbum(req.body).then((data) => {
+            res.redirect('/home')
+        }).catch((error) => {
+            res.status(500).send(error)
+        })
+
+        // res.send(JSON.stringify(req.body))
+    
+    });
+    
+
+})
+
+app.post('/songs/new', upload.single('song'), (req, res) => {
+    let streamUpload = (req) => {
+        return new Promise((resolve, reject) => {
+            let stream = cloudinary.uploader.upload_stream(
+                {resource_type: 'raw'},
+                (error, result) => {
+                if (result) {
+                    resolve(result);
+                } else {
+                    reject(error);
+                }
+                }
+            );
+            streamifier.createReadStream(req.file.buffer).pipe(stream);
+        });
+    };
+    
+    async function upload(req) {
+        let result = await streamUpload(req);
+        console.log(result);
+        return result;
+    }
+    
+    upload(req).then((uploaded)=>{
+
+
+        req.body.musicPath = uploaded.url;
+        console.log(req.body)
+
+        musicData.addSong(req.body).then((data) => {
             res.redirect('/home')
         }).catch((error) => {
             res.status(500).send(error)
