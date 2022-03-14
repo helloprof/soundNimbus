@@ -38,7 +38,8 @@ var Song = sequelize.define('Song', {
     lyrics: Sequelize.STRING
 })
 
-Album.hasMany(Song, {foreignKey: 'albumID'})
+// Album.hasMany(Song, {foreignKey: 'albumID'})
+Song.belongsTo(Album, {foreignKey: 'albumID'})
 
 module.exports.initialize = function() {
     return new Promise((resolve, reject) => {
@@ -55,6 +56,10 @@ module.exports.getAlbums = function() {
     return new Promise((resolve, reject) => {
         Album.findAll().then((data) => {
             resolve(data)
+        })
+        .catch((error) => {
+            console.log(error)
+            reject()
         })
     })
 }
@@ -78,6 +83,34 @@ module.exports.addAlbum = function(album) {
         }).catch((error) => {
             console.log("ALBUM ERROR:")
             console.log(error)
+            reject()
+        })
+
+        // album.id = albums.length + 1
+        // albums.push(album)
+        // resolve()
+    })
+}
+
+module.exports.addSong = function(song) {
+    return new Promise((resolve, reject) => {
+        Song.create(song).then(() => {
+            console.log("SONG CREATED")
+    
+        //     Song.create({
+        //         title: "Paranoid",
+        //         musicPath: "/music/paranoid_kanye.mp3",
+        //         lyrics: "Why are you so paranoid",
+        //         albumID: album.albumID
+        //     })
+        //   }).then(() => console.log("SONG CREATED"))
+
+            resolve()
+
+        }).catch((error) => {
+            console.log("SONG ERROR:")
+            console.log(error)
+            reject()
         })
 
         // album.id = albums.length + 1
