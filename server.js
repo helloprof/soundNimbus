@@ -118,11 +118,31 @@ app.get('/songs/new', (req, res) => {
             layout: "main"
         })
     })
+})
 
+app.get('/songs/:id', (req, res) => {
+    // res.sendFile(path.join(__dirname, '/views/index.html'))
+
+    musicData.getSongsByAlbumID(req.params.id).then((data) => {
+        res.render('albumSongs', {
+            data: data, 
+            layout: "main"
+        })
+    })
 })
 
 app.get('/albums/delete/:id', (req, res) => {
     musicData.deleteAlbum(req.params.id).then((data) => {
+        res.redirect("/home")
+
+    }).catch((error) => {
+        console.log(error)
+        res.status(500).send("ERROR!")
+    })    
+})
+
+app.get('/songs/delete/:id', (req, res) => {
+    musicData.deleteSong(req.params.id).then((data) => {
         res.redirect("/home")
 
     }).catch((error) => {
