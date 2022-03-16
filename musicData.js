@@ -64,6 +64,48 @@ module.exports.getAlbums = function() {
     })
 }
 
+module.exports.getSongsByAlbumID = function(albumID) {
+    return new Promise((resolve, reject) => {
+        Song.findAll({
+            where: {
+                albumID: albumID
+            },
+            // include: [{
+            //     model: Album, 
+            //     // attributes: ["artist"]
+            // }]
+        }).then((songs) => {
+            console.log("SONG DATA without album:")
+            // console.log(songs)
+            
+            Album.findOne({
+                where: {
+                    albumID: albumID
+                }
+            }).then((album) => {
+
+                for (let i = 0; i < songs.length; i++) {
+                    songs[i].albumTitle = album.title
+                    songs[i].albumImagePath = album.imagePath
+                    songs[i].albumYear = album.year
+                    songs[i].albumArtist = album.artist
+
+                    // console.log(album)
+                    // console.log(songs)
+                }
+
+                console.log("SONG DATA with album:")
+                console.log(songs)
+                resolve(songs)
+            })
+
+        }).catch((error) => {
+            console.log("FINDING SONG ERROR:")
+            console.log(error)
+        })
+    })
+}
+
 
 module.exports.addAlbum = function(album) {
     return new Promise((resolve, reject) => {
@@ -140,6 +182,37 @@ module.exports.deleteAlbum = function(albumID) {
 
         }).catch((error) => {
             console.log("ALBUM DELETE ERROR:")
+            console.log(error)
+        })
+
+        // album.id = albums.length + 1
+        // albums.push(album)
+        // resolve()
+    })
+}
+
+module.exports.deleteSong = function(songID) {
+    return new Promise((resolve, reject) => {
+        Song.destroy({
+            where: {
+                songID: songID
+            }
+        }).then((data) => {
+            console.log("SONG DELETED")
+            // console.log(data)
+    
+        //     Song.create({
+        //         title: "Paranoid",
+        //         musicPath: "/music/paranoid_kanye.mp3",
+        //         lyrics: "Why are you so paranoid",
+        //         albumID: album.albumID
+        //     })
+        //   }).then(() => console.log("SONG CREATED"))
+
+            resolve()
+
+        }).catch((error) => {
+            console.log("SONG DELETE ERROR:")
             console.log(error)
         })
 
