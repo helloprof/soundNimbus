@@ -234,6 +234,12 @@ app.post('/songs/new', upload.single('song'), (req, res) => {
 
 })
 
+app.get('/login', (req, res) => {
+    res.render('login', {
+        layout: "main"
+    }) 
+})
+
 app.use((req, res) => {
     res.status(404).send("PAGE NOT FOUND!!")
 })
