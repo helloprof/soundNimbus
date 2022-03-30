@@ -6,6 +6,7 @@ env.config()
 
 const path = require('path')
 const musicData = require('./musicData')
+const userData = require('./userData')
 
 const multer = require('multer')
 const cloudinary = require('cloudinary').v2
@@ -26,7 +27,7 @@ const onHttpStart = () => console.log(`HTTP server is listening on port ${HTTP_P
 app.use(express.static('public'))
 
 // for form data without file
-// app.use(express.urlencoded({ extended: true }))
+app.use(express.urlencoded({ extended: true }))
 
 // multer middleware
 const upload = multer()
@@ -240,11 +241,34 @@ app.get('/login', (req, res) => {
     }) 
 })
 
+app.get('/register', (req, res) => {
+    res.render('register', {
+        layout: "main"
+    }) 
+})
+
+app.post('/register',(req, res) => {
+
+    // some mongoose CREATE function that takes in req.body and creates a new user document 
+    userData.registerUser(req.body).then((data) => {
+        console.log(data)
+
+        res.redirect('/login')
+    }).catch((error) => {
+        console.log(error)
+    })
+    // res.render('register', {
+    //     layout: "main"
+    // }) 
+})
+
 app.use((req, res) => {
     res.status(404).send("PAGE NOT FOUND!!")
 })
 
-musicData.initialize().then(() => {
+musicData.initialize()
+.then(userData.initialize)
+.then(() => {
     app.listen(HTTP_PORT, onHttpStart)
 }).catch((error) => {
     console.log(error)
