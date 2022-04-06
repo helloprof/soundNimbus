@@ -1,4 +1,14 @@
 <div class="container" style="padding-top:60px">
+
+  {{#if errorMessage}} 
+    <div class="alert alert-danger">
+      <strong> ERROR: </strong>
+      {{errorMessage}}
+    </div>
+  {{/if}}
+
+
+  {{#unless successMessage}}
   <form action="/register" method="POST">
     <fieldset>
       <legend>Register New User</legend>
@@ -25,4 +35,11 @@
       <input type="submit" class="btn btn-primary pull-right" value="Register" />
     </fieldset>
   </form>
+  {{else}}
+      <div class="alert alert-success">
+        <strong> SUCCESS: </strong>
+        {{successMessage}}
+      </div>
+      <a href="/login" class="btn btn-primary">Login</a>
+  {{/unless}}
 </div>
