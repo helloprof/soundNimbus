@@ -13,6 +13,7 @@ const cloudinary = require('cloudinary').v2
 const streamifier = require('streamifier')
 
 const exphbs = require('express-handlebars');
+const clientSessions = require("client-sessions");
 
 cloudinary.config({
     cloud_name: process.env.CLOUD_NAME,
@@ -23,6 +24,21 @@ cloudinary.config({
 
 const HTTP_PORT = process.env.PORT
 const onHttpStart = () => console.log(`HTTP server is listening on port ${HTTP_PORT} 🚀🚀🚀`)
+
+app.use(clientSessions({
+    cookieName: "session",
+    secret: "soundNimbus9001April62022TopSecretPassword",
+    duration: 2 * 60 * 1000,
+    activeDuration: 1000 * 60
+}))
+
+function ensureLogin(req, res, next) {
+    if (!req.session.user) {
+      res.redirect("/login");
+    } else {
+      next();
+    }
+  }
 
 app.use(express.static('public'))
 
@@ -132,7 +148,7 @@ app.get('/songs/:id', (req, res) => {
     })
 })
 
-app.get('/albums/delete/:id', (req, res) => {
+app.get('/albums/delete/:id', ensureLogin, (req, res) => {
     musicData.deleteAlbum(req.params.id).then((data) => {
         res.redirect("/home")
 
@@ -241,6 +257,34 @@ app.get('/login', (req, res) => {
     }) 
 })
 
+app.post('/login',(req, res) => {
+
+    // some mongoose CREATE function that takes in req.body and creates a new user document 
+    
+
+    req.body.userAgent = req.get('User-Agent');
+    // req.body now has username, password, AND userAgent
+
+    userData.verifyLogin(req.body).then((mongoData) => {
+
+        req.session.user = {
+            username: mongoData.username,
+            email: mongoData.email,
+            loginHistory: mongoData.loginHistory 
+        }
+
+        console.log("userData:" + mongoData)
+
+        console.log(req.session)
+        res.redirect("/home")
+    }).catch((error) => {
+        console.log(error)
+        res.redirect("/login")
+    })
+    
+
+})
+
 app.get('/register', (req, res) => {
     res.render('register', {
         layout: "main"
@@ -252,10 +296,16 @@ app.post('/register',(req, res) => {
     // some mongoose CREATE function that takes in req.body and creates a new user document 
     userData.registerUser(req.body).then((data) => {
         console.log(data)
-
-        res.redirect('/login')
+        res.render('register', {
+            layout: "main",
+            successMessage: "USER CREATED"
+        })
     }).catch((error) => {
         console.log(error)
+        res.render('register', {
+            layout: "main",
+            errorMessage: error 
+        })
     })
     // res.render('register', {
     //     layout: "main"
